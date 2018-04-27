@@ -21,6 +21,17 @@
 <body>
 </body>
 <script type="text/coffeescript">
-    <!-- insert your code here to say hello backbone in the body tag -->
+    jQuery ->
+        class ListView extends Backbone.View
+            el: $ 'body'
+
+            initialize: ->
+                _.bindAll(@, _.functions(this))
+                @render()
+
+            render: ->
+                $(@el).append '<h1>Hello, Backbone!</h1>'
+
+        list_view = new ListView
 </script>
 </html>
