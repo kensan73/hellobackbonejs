@@ -35,10 +35,30 @@
 
             initialize: ->
                 _.bindAll @
+                @model.bind 'change', @render
+                @model.bind 'remove', @unrender
 
-            render: ->
-                $(@el).html "<span>#{@model.get 'part1'} #{@model.get 'part2'}!</span>"
+            render: =>
+                $(@el).html """
+                    <span>#{@model.get 'part1'} #{@model.get 'part2'}!</span>
+                    <span class="swap">swap</span>
+                    <span class="delete">delete</span>
+                """
                 @
+
+            unrender: =>
+                $(@el).remove()
+
+            swap: ->
+                @model.set
+                    part1: @model.get 'part2'
+                    part2: @model.get 'part1'
+
+            remove: -> @model.destroy()
+
+            events:
+                'click .swap': 'swap'
+                'click .delete': 'remove'
 
         class ListView extends Backbone.View
             el: $ 'body'
@@ -68,6 +88,11 @@
             events:
                 'click button': 'addItem'
 
+        overrideBackboneSync = () ->
+            Backbone.sync = (method, model, success, error) ->
+                success()
+
+        overrideBackboneSync()
         list_view = new ListView
 </script>
 
