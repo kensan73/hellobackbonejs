@@ -27,10 +27,20 @@
 
             initialize: ->
                 _.bindAll(@, _.functions(this))
+                @counter = 0
                 @render()
 
             render: ->
                 $(@el).append '<h1>Hello, Backbone!</h1>'
+                $(@el).append '<button>Add List Item</button>'
+                $(@el).append '<ul></ul>'
+
+            addItem: ->
+                @counter++
+                $('ul').append "<li>Hello, Backbone #{@counter}!</li>"
+
+            events:
+                'click button': 'addItem'
 
         list_view = new ListView
 </script>
