@@ -22,11 +22,21 @@
 </body>
 <script type="text/coffeescript">
     jQuery ->
+        class Item extends Backbone.Model
+            defaults:
+                part1: 'Hello'
+                part2: 'Backbone'
+
+        class List extends Backbone.Collection
+            model: Item
+
         class ListView extends Backbone.View
             el: $ 'body'
 
             initialize: ->
                 _.bindAll(@, _.functions(this))
+                @collection = new List
+                @collection.bind 'add', @appendItem
                 @counter = 0
                 @render()
 
@@ -37,11 +47,21 @@
 
             addItem: ->
                 @counter++
-                $('ul').append "<li>Hello, Backbone #{@counter}!</li>"
+                console.log 'gh1'
+                @item = new Item
+                console.log 'gh2:',@item
+                @item.set part2: "#{@item.get 'part2'} #{@counter}"
+                console.log 'gh3',@collection
+                @collection.add @item
+                console.log 'gh4'
+
+            appendItem: ->
+                $('ul').append "<li>#{@item.get 'part1'} #{@item.get 'part2'}!</li>"
 
             events:
                 'click button': 'addItem'
 
         list_view = new ListView
 </script>
+
 </html>
