@@ -5,9 +5,9 @@
     <title>Welcome</title>
     <script type="text/javascript"
             src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.1.2/coffee-script.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.1/backbone-min.js"></script>
     <script type="text/coffeescript">
         window.learning = ->
             "I am learning coffeescript"
@@ -22,11 +22,21 @@
 </body>
 <script type="text/coffeescript">
     jQuery ->
+        class Item extends Backbone.Model
+            defaults:
+                part1: 'Hello'
+                part2: 'Backbone'
+
+        class List extends Backbone.Collection
+            model: Item
+
         class ListView extends Backbone.View
             el: $ 'body'
 
             initialize: ->
-                _.bindAll(@, _.functions(this))
+                _.bindAll @
+                @collection = new List
+                @collection.bind 'add', @appendItem
                 @counter = 0
                 @render()
 
@@ -37,11 +47,17 @@
 
             addItem: ->
                 @counter++
-                $('ul').append "<li>Hello, Backbone #{@counter}!</li>"
+                item = new Item
+                item.set part2: "#{item.get 'part2'} #{@counter}"
+                @collection.add item
+
+            appendItem: (item) ->
+                $('ul').append "<li>#{item.get 'part1'} #{item.get 'part2'}!</li>"
 
             events:
                 'click button': 'addItem'
 
         list_view = new ListView
 </script>
+
 </html>
